@@ -12,44 +12,45 @@ using Org.BouncyCastle.Math.EC.Rfc8032;
 
 namespace CryptoBenchmarks
 {
+    [CategoriesColumn]
+    [BenchmarkCategory("ed25519")]
     public class Ed25519BouncyCastle
     {
         private static readonly SecureRandom Random = new SecureRandom();
-        byte[] sk;
-        byte[] pk;
-        byte[] m ;
-        byte[] sig1;
-        int mLen;
+        byte[] privateKey;
+        byte[] publicKey;
+        byte[] message;
+        byte[] signature;
+        int messageLength = 32;
 
-        
-        public Ed25519BouncyCastle()
+        [GlobalSetup]
+        public void Setup()
         {
             Ed25519.Precompute();
-
         }
 
         [GlobalSetup(Target = nameof(GeneratePublicKey))]
         public void SetupGenerateKey(){
-            sk = new byte[Ed25519.SecretKeySize];
-            pk = new byte[Ed25519.PublicKeySize];
-            Random.NextBytes(sk);
+            privateKey = new byte[Ed25519.SecretKeySize];
+            publicKey = new byte[Ed25519.PublicKeySize];
+            Random.NextBytes(privateKey);
         }
 
         [GlobalSetup(Target = nameof(Sign))]
         public void SetupSign(){
+            message = new byte[32];
+            signature = new byte[Ed25519.SignatureSize];
+            
             SetupGenerateKey();
-            Ed25519.GeneratePublicKey(sk, 0, pk, 0);
-            m = new byte[32];
-            Random.NextBytes(m);
-            mLen = Random.NextInt() & 32;
-            sig1 = new byte[Ed25519.SignatureSize];
-
+            
+            Ed25519.GeneratePublicKey(privateKey, 0, publicKey, 0);
+            Random.NextBytes(message);
         }
 
         [GlobalSetup(Target = nameof(Verify))]
         public void SetupVerify(){
             SetupSign();
-            Ed25519.Sign(sk, 0, m, 0, mLen, sig1, 0);
+            Ed25519.Sign(privateKey, 0, message, 0, messageLength, signature, 0);
 
         }
 
@@ -57,21 +58,21 @@ namespace CryptoBenchmarks
         [BenchmarkCategory("keygen")]
         public void GeneratePublicKey()
         {
-            Ed25519.GeneratePublicKey(sk, 0, pk, 0);
+            Ed25519.GeneratePublicKey(privateKey, 0, publicKey, 0);
         }
 
         [Benchmark]
         [BenchmarkCategory("sign")]
         public void Sign()
         {
-            Ed25519.Sign(sk, 0, m, 0, mLen, sig1, 0);
+            Ed25519.Sign(privateKey, 0, message, 0, messageLength, signature, 0);
         }
 
         [Benchmark]
         [BenchmarkCategory("verify")]
         public bool Verify()
         {   
-            return Ed25519.Verify(sig1, 0, pk, 0, m, 0, mLen);
+            return Ed25519.Verify(signature, 0, publicKey, 0, message, 0, messageLength);
         }
     }
 }

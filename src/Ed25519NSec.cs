@@ -6,28 +6,36 @@ using NSec.Cryptography;
 
 namespace CryptoBenchmarks
 {
+    [CategoriesColumn]
+    [BenchmarkCategory("ed25519")]
     public class Ed25519NSec
     {
         private static readonly SecureRandom Random = new SecureRandom();
         
         SignatureAlgorithm algorithm = SignatureAlgorithm.Ed25519;
-        byte[] m ;
-        byte[] sig1;
-        int mLen;
-
-        byte[] privateKey;
-        byte[] publicKey;
-
+        byte[] message;
         byte[] signature;
         Key key;
-        public Ed25519NSec()
-        {
-        }
-
-
+        
         [GlobalSetup(Target = nameof(GeneratePublicKey))]
         public void SetupGenerateKey(){
             key = new Key(algorithm);
+        }
+
+        [GlobalSetup(Target = nameof(Sign))]
+        public void SetupSign(){
+            message = new byte[32];
+            signature = new byte[64];
+            SetupGenerateKey();
+            key = Key.Create(algorithm);
+            Random.NextBytes(message);
+        }
+
+        [GlobalSetup(Target = nameof(Verify))]
+        public void SetupVerify(){
+            SetupSign();
+            ReadOnlySpan<byte> m = message;
+            signature = algorithm.Sign(key, m); 
         }
 
         [Benchmark]
@@ -36,37 +44,21 @@ namespace CryptoBenchmarks
             key=Key.Create(algorithm);
         }
 
-        [GlobalSetup(Target = nameof(Sign))]
-        public void SetupSign(){
-            SetupGenerateKey();
-            key = Key.Create(algorithm);
-            m = new byte[32];
-            Random.NextBytes(m);
-            sig1 = new byte[64];
-        }
-
         [Benchmark]
         [BenchmarkCategory("sign")]
         public void Sign()
         {
-            ReadOnlySpan<byte> message = m;
-            algorithm.Sign(key, message); 
-        }
-
-        [GlobalSetup(Target = nameof(Verify))]
-        public void SetupVerify(){
-            SetupSign();
-            ReadOnlySpan<byte> message = m;
-            sig1 = algorithm.Sign(key, message); 
+            ReadOnlySpan<byte> m = message;
+            algorithm.Sign(key, m); 
         }
 
         [Benchmark]
         [BenchmarkCategory("verify")]
         public bool Verify()
         {
-            ReadOnlySpan<byte> message = m;
-            ReadOnlySpan<byte> signature = sig1;
-            return algorithm.Verify(key.PublicKey,message,signature);
+            ReadOnlySpan<byte> m = message;
+            ReadOnlySpan<byte> sig = signature;
+            return algorithm.Verify(key.PublicKey,m,sig);
         }
 
     }
