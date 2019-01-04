@@ -22,9 +22,8 @@ namespace CryptoBenchmarks
         byte[] message;
         byte[] signature;
         int messageLength = 32;
-
-        [GlobalSetup]
-        public void Setup()
+        
+        public Ed25519BouncyCastle()
         {
             Ed25519.Precompute();
         }

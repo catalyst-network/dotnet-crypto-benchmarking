@@ -2,4 +2,6 @@
 /obj
 /bin
 /out
-/BenchmarkDotNet.Artifacts
+BenchmarkDotNet.Artifacts/*.log
+BenchmarkDotNet.Artifacts/results/*.csv
+BenchmarkDotNet.Artifacts/results/*.html

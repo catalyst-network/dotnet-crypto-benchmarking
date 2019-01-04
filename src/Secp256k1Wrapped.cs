@@ -18,21 +18,20 @@ namespace CryptoBenchmarks
         byte[] signature;
         Secp256k1 secp256k1;
         
-        [GlobalSetup]
-        public void Setup()
+        public Secp256k1Wrapped()
         {
             secp256k1 = new Secp256k1();
         }
 
         Span<byte> GeneratePrivateKey()
         {
-            Span<byte> privateKey = new byte[32];
+            Span<byte> sk = new byte[32];
             do
             {
-                Random.NextBytes(privateKey);
+                Random.NextBytes(sk);
             }
-            while (!secp256k1.SecretKeyVerify(privateKey));
-            return privateKey;
+            while (!secp256k1.SecretKeyVerify(sk));
+            return sk;
         }
 
 

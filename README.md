@@ -37,5 +37,5 @@ to get console options
 
 Reports can be found in the BenchmarkDotNet.Artifacts/results folder.
 
-`[linky](BenchmarkDotNet.Artifacts/results.md#section)`
+`[linky](BenchmarkDotNet.Artifacts/results/BenchmarkRun-joined-2019-01-04-01-35-42-report-github.md)`
 
