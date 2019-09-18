@@ -1,5 +1,4 @@
 using System;
-using System.Security.Cryptography;
 using BenchmarkDotNet.Attributes;
 using Org.BouncyCastle.Security;
 using NSec.Cryptography;
