@@ -1,0 +1,3 @@
+[submodule "submodules/Catalyst.Node"]
+	path = submodules/Catalyst.Node
+	url = git@github.com:catalyst-network/Catalyst.Node.git
