@@ -12,10 +12,10 @@ namespace CryptoBenchmarks
     {
         private static readonly SecureRandom Random = new SecureRandom();
         
-        byte[] privateKey;
-        byte[] publicKey;
-        byte[] message ;
-        byte[] signature;
+        byte[] _privateKey = new byte[64];
+        byte[] _publicKey = new byte[64];
+        byte[] _message = new byte[32];
+        byte[] _signature = new byte[64];
         Secp256k1 secp256k1;
         
         public Secp256k1Wrapped()
@@ -23,7 +23,7 @@ namespace CryptoBenchmarks
             secp256k1 = new Secp256k1();
         }
 
-        Span<byte> GeneratePrivateKey()
+        Span<byte> GeneratePrivateKeyHelper()
         {
             Span<byte> sk = new byte[32];
             do
@@ -35,82 +35,53 @@ namespace CryptoBenchmarks
         }
 
 
-        [GlobalSetup(Target = nameof(GeneratePublicKey))]
-        public void SetupGenerateKey(){
-            Span<byte> sk = GeneratePrivateKey();
-            privateKey = sk.ToArray();    
+        [GlobalSetup(Target = nameof(GetPublicKey))]
+        public void SetupGetPublicKey(){
+            Span<byte> sk = GeneratePrivateKeyHelper();
+            _privateKey = sk.ToArray();    
         }
 
         [GlobalSetup(Target = nameof(Sign))]
         public void SetupSign(){
-            signature = new byte[64];
             
-            SetupGenerateKey();
-            
-            Span<byte> sk = new byte[64];
-            sk = privateKey;
-
-            Span<byte> pk = new byte[64];
-            secp256k1.PublicKeyCreate(pk,sk);
-            publicKey=pk.ToArray();
-            
-            Span<byte> m = new byte[32];
-            Random.NextBytes(m);
-            message = m.ToArray();
+            SetupGetPublicKey();           
+            secp256k1.PublicKeyCreate(_publicKey, _privateKey);
+             
         }
 
         [GlobalSetup(Target = nameof(Verify))]
         public void SetupVerify(){
-            SetupSign();
-            
-            Span<byte> sk = new byte[64];
-            sk = privateKey;
+            SetupSign();        
+            secp256k1.Sign(_signature, _message, _privateKey);
 
-            Span<byte> m = new byte[32];
-            m = message;
-
-            Span<byte> sig = new byte[64];
-            secp256k1.Sign(sig, message, sk);
-            signature = sig.ToArray();
         }
 
         [Benchmark]
         [BenchmarkCategory("keygen")]
-        public void GeneratePublicKey(){
-            Span<byte> sk = new byte[64];
-            sk = privateKey;
+        public void GeneratePrivateKey(){
 
-            Span<byte> pk = new byte[64];
-            secp256k1.PublicKeyCreate(pk,sk);  
+            secp256k1.PublicKeyCreate(_publicKey,_privateKey);  
         }
+
+        [Benchmark]
+        [BenchmarkCategory("keygen")]
+        public void GetPublicKey(){
+            Span<byte> pk = new byte[64];
+            secp256k1.PublicKeyCreate(_publicKey,_privateKey);  
+        }
+
         [Benchmark]
         [BenchmarkCategory("sign")]
         public void Sign()
         {
-            Span<byte> m = new byte[32];
-            m = message;
-
-            Span<byte> sk = new byte[64];
-            sk=privateKey;
-
-            Span<byte> sig = new byte[64];
-            secp256k1.Sign(sig, m, sk);   
+            secp256k1.Sign(_signature, _message, _privateKey);   
         }
 
         [Benchmark]
         [BenchmarkCategory("verify")]
         public bool Verify()
         {
-            Span<byte> sig = new byte[64];
-            sig=signature;
-
-            Span<byte> m = new byte[32];
-            m = message;
-
-            Span<byte> pk = new byte[64];
-            pk= publicKey;
-
-            return secp256k1.Verify(sig,m,pk);
+            return secp256k1.Verify(_signature, _message, _publicKey);
     
         }
 

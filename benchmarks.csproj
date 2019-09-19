@@ -16,5 +16,6 @@
     <Content Include="src\Ed25519BouncyCastle.cs" />
     <Content Include="src\Secp256k1Wrapped.cs" />
     <Content Include="src\Ed25519NSec.cs" />
+    <Content Include="src\Edd25519phCatalystFfi.cs" />
   </ItemGroup>
 </Project>

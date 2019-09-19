@@ -22,7 +22,6 @@ namespace CryptoBenchmarks
         public static void Main(string[] args)
         {   
            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
-            /*var sum2 = BenchmarkRunner.Run<Secp256k1Native>();*/
         }
 
     }
