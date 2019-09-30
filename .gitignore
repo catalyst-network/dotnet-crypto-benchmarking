@@ -6,4 +6,7 @@
 BenchmarkDotNet.Artifacts/*.log
 BenchmarkDotNet.Artifacts/results/*.csv
 BenchmarkDotNet.Artifacts/results/*.html
+src/Benchmarks/obj
+src/Benchmarks/bin
+src/Benchmarks/out
 /.vs

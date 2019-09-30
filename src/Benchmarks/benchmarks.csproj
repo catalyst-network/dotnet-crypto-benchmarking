@@ -5,17 +5,16 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Catalyst.Core.Modules.Cryptography.BulletProofs" Version="0.1.1.530" />
     <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.5" />
     <PackageReference Include="Secp256k1.Net" Version="0.1.52" />
     <PackageReference Include="NSec.Cryptography" Version="18.6.0" />
-    <Content Include="src\Program.cs" />
-    <Content Include="src\Ed25519BouncyCastle.cs" />
-    <Content Include="src\Secp256k1Wrapped.cs" />
-    <Content Include="src\Ed25519NSec.cs" />
-    <Content Include="src\Edd25519phCatalystFfi.cs" />
+    <Content Include="Program.cs" />
+    <Content Include="Ed25519BouncyCastle.cs" />
+    <Content Include="Secp256k1Wrapped.cs" />
+    <Content Include="Ed25519NSec.cs" />
+    <Content Include="Ed25519phCatalystFfi.cs" />
   </ItemGroup>
 </Project>
