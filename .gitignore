@@ -1,7 +1,8 @@
 .vscode
-/obj
-/bin
-/out
+.idea
 BenchmarkDotNet.Artifacts/*.log
 BenchmarkDotNet.Artifacts/results/*.csv
 BenchmarkDotNet.Artifacts/results/*.html
+obj/
+bin/
+out/
