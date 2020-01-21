@@ -10,7 +10,7 @@ namespace CryptoBenchmarks
     [BenchmarkCategory("ed25519", "ed25519ph")]
     public class Ed25519phCatalystFfi
     {
-        IWrapper _wrapper = new CryptoWrapper();
+        ICryptoContext _cryptoContext = new FfiWrapper();
         IPrivateKey _privateKey;
         private IPublicKey _publicKey;
         byte[] _message;
@@ -20,7 +20,7 @@ namespace CryptoBenchmarks
         [GlobalSetup(Target = nameof(GetPublicKey))]
         public void SetupGetPublicKey()
         {
-            _privateKey = _wrapper.GeneratePrivateKey();
+            _privateKey = _cryptoContext.GeneratePrivateKey();
         }
 
         [GlobalSetup(Target = nameof(Sign))]
@@ -35,14 +35,14 @@ namespace CryptoBenchmarks
         public void SetupVerify()
         {
             SetupSign();
-            _signature = _wrapper.StdSign(_privateKey, _message, _context);
+            _signature = _cryptoContext.Sign(_privateKey, _message, _context);
         }
 
         [Benchmark]
         [BenchmarkCategory("keygen")]
         public void GeneratePrivateKey()
         {
-            _privateKey = _wrapper.GeneratePrivateKey();
+            _privateKey = _cryptoContext.GeneratePrivateKey();
 
         }
 
@@ -50,7 +50,7 @@ namespace CryptoBenchmarks
         [BenchmarkCategory("getpublickey")]
         public void GetPublicKey()
         {
-            _publicKey = _wrapper.GetPublicKeyFromPrivate(_privateKey);
+            _publicKey = _cryptoContext.GetPublicKeyFromPrivateKey(_privateKey);
         }
 
   
@@ -59,14 +59,14 @@ namespace CryptoBenchmarks
         [BenchmarkCategory("sign")]
         public void Sign()
         {
-            _signature = _wrapper.StdSign(_privateKey, _message, _context);
+            _signature = _cryptoContext.Sign(_privateKey, _message, _context);
         }
 
         [Benchmark]
         [BenchmarkCategory("verify")]
         public bool Verify()
         {
-            return _wrapper.StdVerify(_signature, _message, _context);
+            return _cryptoContext.Verify(_signature, _message, _context);
         }
 
     }
