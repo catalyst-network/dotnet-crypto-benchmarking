@@ -3,6 +3,8 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Toolchains.Results;
 using Catalyst.Abstractions.Cryptography;
 using Catalyst.Core.Modules.Cryptography.BulletProofs;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CryptoBenchmarks
 {
@@ -11,11 +13,17 @@ namespace CryptoBenchmarks
     public class Ed25519phCatalystFfi
     {
         ICryptoContext _cryptoContext = new FfiWrapper();
+        private static readonly Random Random = new Random();
         IPrivateKey _privateKey;
         private IPublicKey _publicKey;
         byte[] _message;
         byte[] _context;
         ISignature _signature;
+        IList<ISignature> _signatures;
+        private List<byte[]> _messages;
+
+        [Params(1, 10, 100, 1000)]
+        public int N;
 
         [GlobalSetup(Target = nameof(GetPublicKey))]
         public void SetupGetPublicKey()
@@ -36,6 +44,23 @@ namespace CryptoBenchmarks
         {
             SetupSign();
             _signature = _cryptoContext.Sign(_privateKey, _message, _context);
+        }
+        [GlobalSetup(Target = nameof(BatchVerify))]
+        public void SetupBatchVerify()
+        {
+            _messages = new List<byte[]>();
+            _signatures = new List<ISignature>();
+            _context = Encoding.UTF8.GetBytes("context");
+            for (int i = 0; i < N; i++)
+            {
+                var bytes = new byte[255];
+                Random.NextBytes(bytes);
+                _messages.Add(bytes);
+            }
+            _messages.ForEach(x =>
+            {
+                _signatures.Add(_cryptoContext.Sign(_cryptoContext.GeneratePrivateKey(), x, _context));
+            });
         }
 
         [Benchmark]
@@ -67,6 +92,13 @@ namespace CryptoBenchmarks
         public bool Verify()
         {
             return _cryptoContext.Verify(_signature, _message, _context);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("batchverify", "verify")]
+        public bool BatchVerify()
+        {
+            return _cryptoContext.BatchVerify(_signatures, _messages, _context);
         }
 
     }
