@@ -8,8 +8,6 @@ using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Utilities.Encoders;
 using Org.BouncyCastle.Math.EC.Rfc8032;
 
-
-
 namespace CryptoBenchmarks
 {
     [CategoriesColumn]
