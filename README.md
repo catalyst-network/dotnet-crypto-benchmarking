@@ -22,7 +22,7 @@ dotnet publish -c Release -o out
 
 To run all benchmarks and collate them into a single table:
 ```shell
-out/benchmarks.dll -f '*' --join
+dotnet out/benchmarks.dll -f '*' --join
 ```
 
 To run single point of comparison eg benchmark the verification method of all libraries:

@@ -22,7 +22,7 @@ namespace CryptoBenchmarks
         IList<ISignature> _signatures;
         private List<byte[]> _messages;
 
-        [Params(1, 10, 100, 1000)]
+        [Params(1, 10, 100, 1000, 10000, 100000)]
         public int N;
 
         [GlobalSetup(Target = nameof(GetPublicKey))]
