@@ -10,6 +10,6 @@
     <PackageReference Include="NSec.Cryptography" Version="18.6.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\submodules\Catalyst.Node\src\Catalyst.Core.Modules.Cryptography.BulletProofs\Catalyst.Core.Modules.Cryptography.BulletProofs.csproj" />
+    <ProjectReference Include="..\submodules\Catalyst\src\Catalyst.Core.Modules.Cryptography.BulletProofs\Catalyst.Core.Modules.Cryptography.BulletProofs.csproj" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,5 @@
 using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Toolchains.Results;
 using Catalyst.Abstractions.Cryptography;
 using Catalyst.Core.Modules.Cryptography.BulletProofs;
 using System.Collections.Generic;
